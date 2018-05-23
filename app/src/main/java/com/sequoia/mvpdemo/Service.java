@@ -2,6 +2,9 @@ package com.sequoia.mvpdemo;
 
 import android.support.annotation.Nullable;
 
+import com.sequoia.mvpdemo.bean.Data;
+import com.sequoia.mvpdemo.utils.HttpUrls;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -13,6 +16,7 @@ import retrofit2.Callback;
 import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author Administrator.
@@ -26,18 +30,18 @@ public class Service {
         return new Service();
     }
 
-    public void requestLoginApi(final OnRequestListen loginListen) {
-        final Call<String> loginCall = buildApi(buildClient()).getData();
-        loginCall.enqueue(new Callback<String>() {
+    public void requestLoginApi(final OnRequestListen loginListen,int start,int count) {
+        final Call<Data> loginCall = buildApi(buildClient()).getData(start,count);
+        loginCall.enqueue(new Callback<Data>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<Data> call, Response<Data> response) {
                 if (loginListen != null) {
                     loginListen.onRequestSuccess(call, response);
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Data> call, Throwable t) {
                 if (loginListen != null) {
                     loginListen.onRequestFails(call, t);
                 }
@@ -59,19 +63,8 @@ public class Service {
     }
 
     private Api buildApi(OkHttpClient client) {
-        return new Retrofit.Builder().baseUrl("https://www.baidu.com/").client(client)
-                .addConverterFactory(new Converter.Factory() {
-                    @Nullable
-                    @Override
-                    public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-                        return new Converter<ResponseBody, String>() {
-                            @Override
-                            public String convert(ResponseBody value) throws IOException {
-                                return value.string();
-                            }
-                        };
-                    }
-                })
+        return new Retrofit.Builder().baseUrl(HttpUrls.DOU_BAN).client(client)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build().create(Api.class);
 
     }

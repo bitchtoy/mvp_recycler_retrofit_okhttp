@@ -1,7 +1,10 @@
 package com.sequoia.mvpdemo;
 
+import com.sequoia.mvpdemo.bean.Data;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 /**
  * @author Administrator.
@@ -9,8 +12,6 @@ import retrofit2.http.GET;
  * @funtion
  */
 public interface Api {
-    @GET("/")
-    Call<String> getData();
-
-
+    @GET("top250")
+    Call<Data> getData(@Query("start")int start, @Query("count") int count);
 }

@@ -6,14 +6,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.sequoia.mvpdemo.bean.Data;
 import com.sequoia.mvpdemo.view.BaseView;
+
+import java.util.List;
 
 /**
  * @author Administrator.
  * @date 2018/5/23.
  * @funtion
  */
-public abstract class  BaseActivity extends Activity implements BaseView {
+public abstract class BaseActivity extends Activity implements BaseView {
     private ProgressDialog dialog;
 
     @Override
@@ -22,10 +25,13 @@ public abstract class  BaseActivity extends Activity implements BaseView {
         init(savedInstanceState);
 
     }
+
     public abstract void init(Bundle savedInstanceState);
 
     @Override
-    public void initUpData(String data) {
+    public void initUpData(List<Data.Subjects.Casts> data) {
+
+
 
     }
 
@@ -34,10 +40,10 @@ public abstract class  BaseActivity extends Activity implements BaseView {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (dialog != null && dialog.isShowing()){
+                if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                dialog = ProgressDialog.show(BaseActivity.this,"","请稍等...");
+                dialog = ProgressDialog.show(BaseActivity.this, "", "请稍等...");
             }
         });
     }
@@ -47,7 +53,7 @@ public abstract class  BaseActivity extends Activity implements BaseView {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (dialog != null && dialog.isShowing()){
+                if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
 
@@ -58,6 +64,6 @@ public abstract class  BaseActivity extends Activity implements BaseView {
 
     @Override
     public void toast(String s) {
-        Toast.makeText(this,s,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }

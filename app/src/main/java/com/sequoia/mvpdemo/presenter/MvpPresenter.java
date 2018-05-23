@@ -4,8 +4,12 @@ import android.util.Log;
 
 import com.sequoia.mvpdemo.OnRequestListen;
 import com.sequoia.mvpdemo.Service;
+import com.sequoia.mvpdemo.bean.Data;
 import com.sequoia.mvpdemo.model.MvpModel;
 import com.sequoia.mvpdemo.view.BaseView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,32 +42,38 @@ public class MvpPresenter {
     public void internetRequest(){
         getInternetCallBack();
     }
-    private void upView(String s){
+    private void upView(List<Data.Subjects.Casts> s){
         mBaseView.initUpData(s);
     }
-    private void saveToModel(String s){
+    private void saveToModel(List<Data.Subjects.Casts> s){
         mModel.setinitData(s);
     }
     private void getInternetCallBack() {
-        Service service = Service.getInstanceLoginService();
+        final Service service = Service.getInstanceLoginService();
         showDialog();
-        service.requestLoginApi(new OnRequestListen() {
+        OnRequestListen<Data> onRequestListen = new OnRequestListen<Data>() {
             @Override
-            public void onRequestSuccess(Call call, Response response) {
-                saveToModel(response.body().toString());
-                upView(response.body().toString());
-                Log.d("---->",response.body().toString());
-                hideDialog();
+            public void onRequestSuccess(Call<Data> call, Response<Data> response) {
+                if (response.code() == 200){
+                    Data data = response.body();
+                    List<Data.Subjects> subjects = data.subjects;
+                    List<Data.Subjects.Casts> casts = new ArrayList<>();
+                    for (int i=0;i<subjects.size();i++){
+                        casts.addAll(subjects.get(i).casts);
+                    }
+                    upView(casts);
+                    saveToModel(casts);
+                    hideDialog();
+                }
+
             }
 
             @Override
-            public void onRequestFails(Call call, Throwable throwable) {
-                saveToModel(throwable.toString());
-                upView(throwable.toString());
-                Log.d("---->",throwable.toString());
-                hideDialog();
+            public void onRequestFails(Call<Data> call, Throwable throwable) {
+
             }
-        });
+        };
+        service.requestLoginApi(onRequestListen,0,20);
 
     }
 

@@ -1,6 +1,8 @@
 package com.sequoia.mvpdemo.model;
 
-import javax.inject.Inject;
+import com.sequoia.mvpdemo.bean.Data;
+
+import java.util.List;
 
 /**
  * @author Administrator.
@@ -8,15 +10,15 @@ import javax.inject.Inject;
  * @funtion
  */
 public class MvpModel implements Model {
-    private String s;
+    private List<Data.Subjects.Casts> s;
 
     @Override
-    public void setinitData(String datas) {
+    public void setinitData(List<Data.Subjects.Casts> datas) {
         s = datas;
     }
 
     @Override
-    public String getData() {
+    public List<Data.Subjects.Casts> getData() {
         return s;
     }
 }
